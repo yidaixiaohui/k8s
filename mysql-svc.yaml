@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service     #表示Kubernetes Service
+metadata:
+  name: mysql   #Service的名称
+spec:
+  type: NodePort
+  ports:
+    - port: 3306   #Service提供服务的端口号
+      nodePort: 30306
+  selector:
+    app: mysql    #Service对应的Pod的标签
+
+

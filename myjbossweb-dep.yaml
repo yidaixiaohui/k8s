@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myjbossweb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myjbossweb
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: myjbossweb
+    spec:
+      containers:
+      - name: myjbossweb
+        image: jboss/wildfly:latest
+        volumeMounts:
+        - name: time-zone
+          mountPath: /etc/localtime
+        - name: jboss-output
+          mountPath: /opt/jboss/output
+        #- name: jboss-logs
+        #  mountPath: /opt/jboss/wildfly/standalone/log
+        #- name: jboss-data
+        #  mountPath: /opt/jboss/wildfly/standalone/data
+        #- name: jboss-deployments
+        #  mountPath: /opt/jboss/wildfly/standalone/deployments
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_SERVICE_HOST
+          value: '192.168.149.129'               #此处为mysql服务的Cluster IP
+        - name: MYSQL_SERVICE_PORT
+          value: '30306'
+      volumes:
+      - name: time-zone
+        hostPath:
+          path: /etc/localtime
+      - name: jboss-output
+        hostPath:
+          path: /data/jboss/deployments
+      #- name: jboss-logs
+      #  hostPath:
+      #    path: /data/jboss/logs
+      #- name: jboss-data
+      #  hostPath:
+      #    path: /data/jboss/data
+      #- name: jboss-deployments
+      #  hostPath:
+      #    path: /data/jboss/deployments
+
